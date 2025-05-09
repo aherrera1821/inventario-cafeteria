@@ -7,15 +7,33 @@ from db import get_connection
 from datetime import datetime
 import pandas as pd
 
-config = st.secrets["credentials"]
-cookie_config = st.secrets["cookie"]
+
+credentials = {
+    "usernames": {
+        "usuario1": {
+            "name": "Alvaro H",
+            "password": st.secrets["HASH_ALVARO"]
+        },
+        "usuario2": {
+            "name": "Maru R",
+            "password": st.secrets["HASH_MARU"]
+        }
+    }
+}
+
+cookie_config = {
+    "name": st.secrets["COOKIE_NAME"],
+    "key": st.secrets["COOKIE_KEY"],
+    "expiry_days": int(st.secrets["COOKIE_EXPIRY"])
+}
 
 authenticator = stauth.Authenticate(
-    config,
+    credentials,
     cookie_config["name"],
     cookie_config["key"],
     cookie_config["expiry_days"]
 )
+
 
 
 authenticator = stauth.Authenticate(
