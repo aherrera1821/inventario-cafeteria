@@ -7,6 +7,29 @@ from db import get_connection
 from datetime import datetime
 import pandas as pd
 
+def verificar_tablas():
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT table_name 
+            FROM information_schema.tables 
+            WHERE table_schema='public' 
+              AND table_type='BASE TABLE';
+        """)
+
+        tablas = cursor.fetchall()
+        st.info("🗂️ Tablas existentes en la base de datos:")
+        for t in tablas:
+            st.write(f"• {t[0]}")
+        
+        conn.close()
+
+    except Exception as e:
+        st.error(f"❌ Error al verificar tablas: {e}")
+
+
 # --- Credenciales y configuración de cookies desde secrets.toml ---
 credentials = {
     "usernames": {
@@ -41,6 +64,7 @@ name, authentication_status, username = authenticator.login("Login", location="m
 
 # --- App Principal ---
 if authentication_status:
+    verificar_tablas()
     conn = get_connection()
     cursor = conn.cursor()
 
