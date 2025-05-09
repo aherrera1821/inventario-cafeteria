@@ -7,9 +7,16 @@ from db import get_connection
 from datetime import datetime
 import pandas as pd
 
-# Cargar credenciales desde archivo YAML
-with open('config.yaml') as file:
-    config = yaml.load(file, Loader=SafeLoader)
+config = st.secrets["credentials"]
+cookie_config = st.secrets["cookie"]
+
+authenticator = stauth.Authenticate(
+    config,
+    cookie_config["name"],
+    cookie_config["key"],
+    cookie_config["expiry_days"]
+)
+
 
 authenticator = stauth.Authenticate(
     config['credentials'],
