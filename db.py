@@ -9,4 +9,3 @@ def get_connection():
         password=st.secrets["DB_PASS"],
         port=st.secrets["DB_PORT"]
     )
-

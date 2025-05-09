@@ -1,13 +1,13 @@
 # app.py (con login y autenticación)
 import streamlit as st
+st.set_page_config(page_title="Inventario Moonlatte", layout="centered")  # ¡Importante ir primero!
+
 import streamlit_authenticator as stauth
-import yaml
-from yaml.loader import SafeLoader
 from db import get_connection
 from datetime import datetime
 import pandas as pd
 
-
+# --- Credenciales y configuración de cookies desde secrets.toml ---
 credentials = {
     "usernames": {
         "usuario1": {
@@ -29,6 +29,7 @@ cookie_config = {
     "expiry_days": int(st.secrets["COOKIE_EXPIRY"])
 }
 
+# --- Autenticación ---
 authenticator = stauth.Authenticate(
     credentials,
     cookie_config["name"],
@@ -38,13 +39,12 @@ authenticator = stauth.Authenticate(
 
 name, authentication_status, username = authenticator.login("Login", location="main")
 
+# --- App Principal ---
 if authentication_status:
     conn = get_connection()
     cursor = conn.cursor()
 
-    st.set_page_config(page_title="Inventario Cafetería", layout="centered")
-    st.title("📦 Inventario - Cafetería")
-
+    st.title("📦 Inventario - Moonlatte")
     authenticator.logout("Logout", "sidebar")
     st.sidebar.markdown(f"Bienvenido, {name}")
 
@@ -126,6 +126,7 @@ if authentication_status:
         df = pd.DataFrame(insumos, columns=["ID", "Nombre", "Unidad", "Cantidad disponible"])
         st.dataframe(df, use_container_width=True)
 
+# --- Estado de autenticación ---
 elif authentication_status is False:
     st.error("❌ Usuario o contraseña incorrectos")
 elif authentication_status is None:
