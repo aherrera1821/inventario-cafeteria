@@ -1,6 +1,6 @@
 streamlit
 psycopg2-binary
-streamlit-authenticator
+streamlit-authenticator==0.2.3
 python-dotenv
 PyYAML
 pandas
