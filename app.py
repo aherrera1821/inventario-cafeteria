@@ -7,6 +7,8 @@ from db import get_connection
 from datetime import datetime
 import pandas as pd
 
+from datetime import datetime
+import matplotlib.pyplot as plt
 
 # --- Credenciales y configuración de cookies desde secrets.toml ---
 credentials = {
@@ -125,8 +127,41 @@ if authentication_status:
         st.header("📊 Inventario actual")
         insumos = obtener_insumos()
         df = pd.DataFrame(insumos, columns=["ID", "Nombre", "Unidad", "Cantidad disponible"])
+
+        # --- Dashboard: productos con baja disponibilidad ---
+        umbral = st.slider("Mostrar productos con menos de:", min_value=1, max_value=20, value=5)
+        df_bajos = df[df["Cantidad disponible"] < umbral]
+
+        if not df_bajos.empty:
+            st.subheader("⚠️ Productos con baja disponibilidad")
+            st.dataframe(df_bajos[["Nombre", "Cantidad disponible"]], use_container_width=True)
+
+        # Gráfico de barras horizontal
+            fig, ax = plt.subplots()
+            ax.barh(df_bajos["Nombre"], df_bajos["Cantidad disponible"], color='tomato')
+            ax.set_xlabel("Cantidad disponible")
+            ax.set_title("Productos con bajo stock")
+            st.pyplot(fig)
+        else:
+            st.success("✅ No hay productos por debajo del umbral")
+
+        # --- Inventario completo ---
+        st.subheader("🗃️ Inventario completo")
         st.dataframe(df, use_container_width=True)
 
+        # --- Descarga de CSV con firma y fecha ---
+        fecha = datetime.now().strftime("%Y-%m-%d")
+        df_export = df.copy()
+        df_export["Exportado por"] = name
+        df_export["Fecha de exportación"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        csv = df_export.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="📥 Descargar inventario en CSV",
+            data=csv,
+            file_name=f"inventario_{fecha}.csv",
+            mime='text/csv'
+        )
 # --- Estado de autenticación ---
 elif authentication_status is False:
     st.error("❌ Usuario o contraseña incorrectos")

@@ -4,3 +4,4 @@ streamlit-authenticator==0.2.3
 python-dotenv
 PyYAML
 pandas
+matplotlib
