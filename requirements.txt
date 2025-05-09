@@ -1,0 +1,6 @@
+streamlit
+psycopg2-binary
+streamlit-authenticator
+python-dotenv
+PyYAML
+pandas
