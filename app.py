@@ -12,11 +12,13 @@ credentials = {
     "usernames": {
         "usuario1": {
             "name": "Alvaro H",
-            "password": st.secrets["HASH_ALVARO"]
+            "password": st.secrets["HASH_ALVARO"],
+            "email": "alvaro@email.com"
         },
         "usuario2": {
             "name": "Maru R",
-            "password": st.secrets["HASH_MARU"]
+            "password": st.secrets["HASH_MARU"],
+            "email": "maru@email.com"
         }
     }
 }
@@ -34,7 +36,7 @@ authenticator = stauth.Authenticate(
     cookie_config["expiry_days"]
 )
 
-name, authentication_status, username = authenticator.login("Login", "main")
+name, authentication_status, username = authenticator.login("Login", location="main")
 
 if authentication_status:
     conn = get_connection()
