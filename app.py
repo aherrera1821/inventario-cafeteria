@@ -39,9 +39,6 @@ authenticator = stauth.Authenticate(
 )
 
 name, authentication_status, username = authenticator.login("Login", location="main")
-st.write("Status:", authentication_status)
-st.write("Username ingresado:", username)
-
 
 # --- App Principal ---
 if authentication_status:
